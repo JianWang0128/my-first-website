@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的第一个网站</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="leaflet/leaflet.css" />
+  <script src="leaflet/leaflet.js"></script>
+  </head>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="#">首页</a></li>
+      <li><a href="#">关于</a></li>
+      <li><a href="#">服务</a></li>
+      <li><a href="#">联系我们</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <h1>欢迎来到我的网站</h1>
+    <p>这是一个简单的示例网站，展示了基本的网页元素</p>
+    <a href="#contact" class="btn">联系我们</a>
+  </header>
+
+  <section class="features">
+    <h2>网站特色</h2>
+    <div class="feature">
+      <h3>简洁设计</h3>
+      <p>采用现代简约的设计风格，提供良好的用户体验</p>
+    </div>
+    <div class="feature">
+      <h3>响应式布局</h3>
+      <p>在手机、平板和电脑上都能完美展示</p>
+    </div>
+  </section>
+  
+  <div id="hk-map" style="width: 100%; max-width: 1000px; height: 600px; margin: 30px auto;"></div>
+  <script>
+    // 创建地图，并设置中心点，缩放级别
+    var map = L.map('hk-map').setView([22.2901, 114.1827], 14);
+  
+    // 添加Jawg Sunny底图
+    L.tileLayer('https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token=t0NFjF6QCFD8hGAc63VRBiLszXybQNkReHept8Gj1MPQlRl9t79sedBWRORJHk9F', {
+      maxZoom: 22,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://www.jawg.io" target="_blank">Jawg</a>'
+    }).addTo(map);
+  
+    // 标记维多利亚港
+    var markerVic = L.marker([22.2936, 114.1694]).addTo(map)
+      .bindPopup('维多利亚港');
+    markerVic.on('click', function(e) {
+      map.setView(e.latlng, 20); // 移动到该点并放大
+    });
+    
+    // 标记太平山顶
+    var markerPeak = L.marker([22.2750, 114.1455]).addTo(map)
+      .bindPopup('太平山顶');
+    markerPeak.on('click', function(e) {
+      map.setView(e.latlng, 17);
+    });
+    
+    // 标记香港迪士尼乐园
+    var markerDisney = L.marker([22.3126, 114.0416]).addTo(map)
+      .bindPopup('香港迪士尼乐园');
+    markerDisney.on('click', function(e) {
+      map.setView(e.latlng, 20);
+    });
+    
+    // 标记尖沙咀
+    var markerTsim = L.marker([22.2960, 114.1722]).addTo(map)
+      .bindPopup('尖沙咀');
+    markerTsim.on('click', function(e) {
+      map.setView(e.latlng, 20);
+    });  
+  </script>
+
+    <div class="gallery">
+    <img src="https://picsum.photos/300/200?random=1" alt="示例图片1">
+    <img src="https://picsum.photos/300/200?random=2" alt="示例图片2">
+    <img src="https://picsum.photos/300/200?random=3" alt="示例图片3">
+  </div>
+
+  <section id="contact">
+    <h2>联系我们</h2>
+    <form>
+      <label for="name">姓名：</label>
+      <input type="text" id="name" required>
+      
+      <label for="email">邮箱：</label>
+      <input type="email" id="email" required>
+      
+      <label for="message">留言：</label>
+      <textarea id="message"></textarea>
+      
+      <button type="submit">发送</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>© 2025 我的网站版权所有</p>
+    <ul>
+      <li><a href="#">隐私政策</a></li>
+      <li><a href="#">使用条款</a></li>
+    </ul>
+  </footer>
+</body>
+</html>
