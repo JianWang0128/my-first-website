@@ -37,44 +37,77 @@
     </div>
   </section>
   
-  <div id="hk-map" style="width: 100%; max-width: 1000px; height: 600px; margin: 30px auto;"></div>
+  <!-- 地图容器，必须有id="hk-map" -->
+  <div id="hk-map" style="width:90%;height:500px;position:relative;margin:auto;border-radius:8px 8px 8px 8px;">
+    <!-- 浮窗放在地图容器内部，并覆盖左半部分 -->
+    <div id="info-popup" style="
+      display:none;
+      position:absolute;
+      top:0;
+      left:0;
+      width:50%;
+      height:100%;
+      background:#fff;
+      border-radius:8px 8px 0px 0px;
+      box-shadow:2px 0 8px rgba(0,0,0,0.15);
+      z-index:1000;
+      padding:0px 0px 0px 0px;
+      box-sizing:border-box;
+      overflow:auto;
+    ">
+      <span id="close-popup" style="position:absolute; top:12px; right:18px; cursor:pointer; font-size:22px;">×</span>
+      <img id="popup-img" src="" alt="景点图片" style="width:100%;border-radius:6px;">
+      <h3 id="popup-title" style="margin:18px 0 8px 0;"></h3>
+      <p id="popup-desc" style="margin:0;"></p>
+    </div>
+  </div>
   <script>
-    // 创建地图，并设置中心点，缩放级别
-    var map = L.map('hk-map').setView([22.2901, 114.1827], 14);
-  
-    // 添加Jawg Sunny底图
+    // 初始中心和缩放
+    var initialCenter = [22.2901, 114.1827];
+    var initialZoom = 14;
+
+    var map = L.map('hk-map').setView(initialCenter, initialZoom);
+
     L.tileLayer('https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token=t0NFjF6QCFD8hGAc63VRBiLszXybQNkReHept8Gj1MPQlRl9t79sedBWRORJHk9F', {
       maxZoom: 22,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://www.jawg.io" target="_blank">Jawg</a>'
     }).addTo(map);
-  
-    // 标记维多利亚港
-    var markerVic = L.marker([22.2936, 114.1694]).addTo(map)
-      .bindPopup('维多利亚港');
-    markerVic.on('click', function(e) {
-      map.setView(e.latlng, 20); // 移动到该点并放大
+
+    // 景点数据
+    var spots = [
+      {
+        latlng: [22.31212, 114.16868],
+        title: '油麻地果栏',
+        img: 'pictures/youmadiguolan.png',
+        desc: '油麻地果栏位于香港九龙油麻地新填地街, 是香港主要的水果批发市场, 承担全港近八成的果批业务。该市场始建于1913年, 其装饰艺术风格建筑群于2009年被评定为二级历史建筑。作为香港重要的文化遗产, 油麻地果栏不仅保留战前建筑风貌, 还承载了独特的市井文化'
+      }
+    ];
+
+    // 添加标记和交互
+    spots.forEach(function(spot) {
+      var marker = L.marker(spot.latlng).addTo(map).bindPopup(spot.title);
+      marker.on('click', function(e) {
+        // 放大并偏移地图，使标记在右半部分
+        map.setView(spot.latlng, 17, {animate: true});
+        setTimeout(function() {
+          // 计算偏移量（向左平移地图宽度的1/4）
+          var mapWidth = map.getSize().x;
+          map.panBy([-mapWidth/4, 0], {animate: true});
+        }, 400);
+
+        // 显示浮窗
+        document.getElementById('popup-img').src = spot.img;
+        document.getElementById('popup-title').textContent = spot.title;
+        document.getElementById('popup-desc').textContent = spot.desc;
+        document.getElementById('info-popup').style.display = 'block';
+      });
     });
-    
-    // 标记太平山顶
-    var markerPeak = L.marker([22.2750, 114.1455]).addTo(map)
-      .bindPopup('太平山顶');
-    markerPeak.on('click', function(e) {
-      map.setView(e.latlng, 17);
-    });
-    
-    // 标记香港迪士尼乐园
-    var markerDisney = L.marker([22.3126, 114.0416]).addTo(map)
-      .bindPopup('香港迪士尼乐园');
-    markerDisney.on('click', function(e) {
-      map.setView(e.latlng, 20);
-    });
-    
-    // 标记尖沙咀
-    var markerTsim = L.marker([22.2960, 114.1722]).addTo(map)
-      .bindPopup('尖沙咀');
-    markerTsim.on('click', function(e) {
-      map.setView(e.latlng, 20);
-    });  
+
+    // 关闭浮窗并恢复地图
+    document.getElementById('close-popup').onclick = function() {
+      document.getElementById('info-popup').style.display = 'none';
+      map.setView(initialCenter, initialZoom, {animate: true});
+    };
   </script>
 
     <div class="gallery">
